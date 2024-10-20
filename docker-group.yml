@@ -7,3 +7,7 @@
         name: daniel
         groups: docker
         append: yes
+
+    - name: Reload systemd to apply changes
+      ansible.builtin.systemd:
+        daemon_reload: yes
