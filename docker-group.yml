@@ -1,0 +1,9 @@
+---
+- hosts: web_servers
+  become: true
+  tasks:
+    - name: Add user 'daniel' to the 'docker' group
+      ansible.builtin.user:
+        name: daniel
+        groups: docker
+        append: yes
