@@ -1,0 +1,9 @@
+---
+- hosts: web_servers
+  become: true
+  tasks:
+    - name: Purge Apache2 (including configuration files)
+      ansible.builtin.package:
+        name: apache2
+        state: absent
+        purge: yes
