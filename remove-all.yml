@@ -1,0 +1,67 @@
+---
+- hosts: web_servers
+  become: true
+  tasks:
+    # Purge Docker and its related packages
+    - name: Purge Docker and its dependencies
+      ansible.builtin.package:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: absent
+        purge: yes
+
+    # Remove Docker Compose (installed via pip)
+    - name: Remove Docker Compose
+      ansible.builtin.pip:
+        name: docker-compose
+        state: absent
+
+    # Remove Docker repository from apt sources
+    - name: Remove Docker repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: absent
+
+    # Remove Docker GPG key
+    - name: Remove Docker GPG key
+      ansible.builtin.apt_key:
+        key: https://download.docker.com/linux/ubuntu/gpg
+        state: absent
+
+    # Purge basic packages (curl, git, build-essential, etc.)
+    - name: Purge basic packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - git
+          - build-essential
+          - vim
+          - htop
+          - wget
+          - unzip
+          - python3-pip
+          - tree
+        state: absent
+        purge: yes
+
+    # Remove any remaining Docker directories and files
+    - name: Remove Docker directories and files
+      ansible.builtin.file:
+        path: /var/lib/docker
+        state: absent
+        recurse: yes
+
+    # Remove the user 'daniel' from the 'docker' group
+    - name: Remove 'daniel' from the 'docker' group
+      ansible.builtin.user:
+        name: daniel
+        groups: docker
+        append: no
+        state: present
+
+    # Reload systemd after group and package changes
+    - name: Reload systemd to apply changes
+      ansible.builtin.systemd:
+        daemon_reload: yes
