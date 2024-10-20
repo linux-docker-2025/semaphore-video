@@ -47,12 +47,11 @@
         state: absent
         purge: yes
 
-    # Remove any remaining Docker directories and files
+    # Remove Docker directories and files
     - name: Remove Docker directories and files
       ansible.builtin.file:
         path: /var/lib/docker
         state: absent
-        recurse: yes
 
     # Remove the user 'daniel' from the 'docker' group
     - name: Remove 'daniel' from the 'docker' group
