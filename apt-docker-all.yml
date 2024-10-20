@@ -1,0 +1,49 @@
+---
+- hosts: web_servers
+  become: true
+  tasks:
+    # Update apt package cache
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    # Install basic packages
+    - name: Install basic packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - git
+          - build-essential
+          - vim
+          - htop
+          - wget
+          - unzip
+        state: present
+
+    # Install Python pip
+    - name: Install Python pip
+      ansible.builtin.package:
+        name: python3-pip
+        state: present
+
+    # Upgrade all installed packages to the latest version
+    - name: Upgrade all installed packages to the latest version
+      ansible.builtin.apt:
+        upgrade: yes
+
+    # Add user 'daniel' to the 'docker' group
+    - name: Add user 'daniel' to the 'docker' group
+      ansible.builtin.user:
+        name: daniel
+        groups: docker
+        append: yes
+
+    # Reload systemd to apply group changes
+    - name: Reload systemd to apply changes
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    # Perform a dist-upgrade for full package upgrades
+    - name: Perform a dist-upgrade
+      ansible.builtin.apt:
+        upgrade: dist
