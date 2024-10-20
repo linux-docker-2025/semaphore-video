@@ -2,6 +2,12 @@
 - hosts: web_servers
   become: true
   tasks:
+     # Remove Docker Compose with the --break-system-packages flag
+    - name: Remove Docker Compose with --break-system-packages
+      ansible.builtin.command: 
+        cmd: "/usr/bin/python3 -m pip uninstall -y docker-compose --break-system-packages"
+      ignore_errors: yes
+    
     # Purge Docker and its related packages
     - name: Purge Docker and its dependencies
       ansible.builtin.package:
